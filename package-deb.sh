@@ -12,8 +12,8 @@ then
   ARCH="armhf"
 fi
 
-while read KERNEL_VERSION; do
-
+while read KVER; do
+  export KERNEL_VERSION=$KVER
   ./build.sh
 
   #package
