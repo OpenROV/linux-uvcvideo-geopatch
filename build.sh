@@ -1,8 +1,7 @@
 #!/bin/bash
 set -ex
 
-if ! [[ "$KERNEL_VERSION" == 4.1.*]]
-then
+if ! [[ "$KERNEL_VERSION" == 4.1.* ]]; then
   echo "Build only supports 4.1.x Kernels on Debian Jessie"
   exit 1
 fi
