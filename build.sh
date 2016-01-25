@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 if ! [[ $KERNEL_VERSION == 4.1.*]]
 then
