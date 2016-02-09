@@ -24,6 +24,7 @@ while read KVER; do
   fpm -f -m info@openrov.com -s dir -t deb -a $ARCH \
   	-n ${PACKAGE} \
   	-v ${PACKAGE_VERSION} \
+    --after-install=${DIR}/install_lib/afterinstall.sh \
   	--description "uvcvideo-geopatch" \
   	-C ${DIR}/output .
 
