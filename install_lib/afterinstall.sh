@@ -1,6 +1,10 @@
 #!/bin/bash
 set -x
 set -e
-modprobe -r uvcvideo || true
-depmod -a
-modprobe uvcvideo
+if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]; then
+  echo "We are chrooted!"
+else
+  modprobe -r uvcvideo || true
+  depmod -a
+  modprobe uvcvideo
+fi
