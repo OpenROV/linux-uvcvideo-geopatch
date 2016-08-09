@@ -7,13 +7,14 @@ if ! [[ "$KERNEL_VERSION" == 4.* ]]; then
 fi
 
 if [ ! -d /lib/modules/${KERNEL_VERSION}/build ]; then
-   wget http://repos.rcn-ee.com/debian/pool/main/l/linux-upstream/linux-headers-${KERNEL_VERSION}_1jessie_armhf.deb
-   dpkg --force-all -i linux-headers-${KERNEL_VERSION}_1jessie_armhf.deb
+  wget http://build1.dev.resin.io/~theodor/rpi3-1.6-kernel/kernel_modules_headers.tar.bz2
+  tar -jxvf kernel_modules_headers.tar.bz2 --strip 1 -C /lib/modules/${KERNEL_VERSION}
 fi
+#export KERNEL_ROOT=/lib/modules/${KERNEL_VERSION}/build
 export KERNEL_ROOT=/lib/modules/${KERNEL_VERSION}/build
 
 # Build uvcvideo Kernel Driver for 4.1.x based Kernels
-make -j8 -C ./uvcvideo/uvc-4.1.1/
+make -j8 -C ./uvcvideo/uvc-${KERNEL_VERSION}/
 
 mkdir -p ./output/lib/modules/${KERNEL_VERSION}/updates
-cp ./uvcvideo/uvc-4.1.1/uvcvideo.ko ./output/lib/modules/${KERNEL_VERSION}/updates
+cp ./uvcvideo/uvc-${KERNEL_VERSION}/uvcvideo.ko ./output/lib/modules/${KERNEL_VERSION}/updates
