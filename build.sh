@@ -8,7 +8,8 @@ fi
 
 if [ ! -d /lib/modules/${KERNEL_VERSION}/build ]; then
   wget http://build1.dev.resin.io/~theodor/rpi3-1.6-kernel/kernel_modules_headers.tar.bz2
-  tar -jxvf kernel_modules_headers.tar.bz2 --strip 1 -C /lib/modules/${KERNEL_VERSION}
+  mkdir -p /lib/modules/${KERNEL_VERSION}/build
+  tar -jxvf kernel_modules_headers.tar.bz2 --strip 1 -C /lib/modules/${KERNEL_VERSION}/build
 fi
 #export KERNEL_ROOT=/lib/modules/${KERNEL_VERSION}/build
 export KERNEL_ROOT=/lib/modules/${KERNEL_VERSION}/build
