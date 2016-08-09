@@ -15,7 +15,7 @@ fi
 export KERNEL_ROOT=/lib/modules/${KERNEL_VERSION}/build
 
 # Build uvcvideo Kernel Driver for 4.1.x based Kernels
-make -j8 -C ./uvcvideo/uvc-${KERNEL_VERSION}/
+make -j8 -C ./uvcvideo/uvc-4.1.1/
 
 mkdir -p ./output/lib/modules/${KERNEL_VERSION}/updates
-cp ./uvcvideo/uvc-${KERNEL_VERSION}/uvcvideo.ko ./output/lib/modules/${KERNEL_VERSION}/updates
+cp ./uvcvideo/uvc-4.1.1/uvcvideo.ko ./output/lib/modules/${KERNEL_VERSION}/updates
