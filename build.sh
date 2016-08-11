@@ -6,10 +6,15 @@ if ! [[ "$KERNEL_VERSION" == 4.* ]]; then
   exit 1
 fi
 
+rm -rf /lib/modules/${KERNEL_VERSION}/build || true
+
 if [ ! -d /lib/modules/${KERNEL_VERSION}/build ]; then
   ##wget http://build1.dev.resin.io/~theodor/rpi3-1.6-kernel/kernel_modules_headers.tar.bz2
   mkdir -p /lib/modules/${KERNEL_VERSION}/build
   tar -jxvf kernel_modules_headers.tar.bz2 --strip 1 -C /lib/modules/${KERNEL_VERSION}/build
+  pushd -C /lib/modules/${KERNEL_VERSION}/build
+  make scripts
+  popd
 fi
 #export KERNEL_ROOT=/lib/modules/${KERNEL_VERSION}/build
 export KERNEL_ROOT=/lib/modules/${KERNEL_VERSION}/build
