@@ -7,13 +7,13 @@ if ! [[ "$KERNEL_VERSION" == 4.* ]]; then
 fi
 
 if [ ! -d /lib/modules/${KERNEL_VERSION}/build ]; then
-  wget http://build1.dev.resin.io/~theodor/rpi3-1.6-kernel/kernel_modules_headers.tar.bz2
+  ##wget http://build1.dev.resin.io/~theodor/rpi3-1.6-kernel/kernel_modules_headers.tar.bz2
   mkdir -p /lib/modules/${KERNEL_VERSION}/build
   tar -jxvf kernel_modules_headers.tar.bz2 --strip 1 -C /lib/modules/${KERNEL_VERSION}/build
 fi
 #export KERNEL_ROOT=/lib/modules/${KERNEL_VERSION}/build
 export KERNEL_ROOT=/lib/modules/${KERNEL_VERSION}/build
-export ARCH="armhf"
+export ARCH="arm"
 # Build uvcvideo Kernel Driver for 4.1.x based Kernels
 make -j8 -C ./uvcvideo/uvc-4.1.1/
 
