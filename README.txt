@@ -14,6 +14,6 @@ NOTE: For 2.6.26 and 3.0 kernel patches, please use ‘–p1’ patch level in a
 	•	Build uvc driver kernel module, using following commands # cd $GEOSW_ROOT/condorsw/host/lib/uvcvideo/uvc # make
 
 Todo:
-- [ ] Pull the GEO code GC6500 project
+- [X] Pull the GEO code GC6500 project
 - [ ] Pull the Linux kernel source for the target kernel
 - [ ] Rip out the Geo Patch printk commands
