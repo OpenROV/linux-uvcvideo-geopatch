@@ -1,8 +1,40 @@
 #!/bin/bash
 set -ex
-#Install Pre-req
-apt-get update && apt-get install -y ruby-dev ruby
-gem install fpm
+
+#Array containing all of the packages we need from aptitude
+declare -r PRE_REQ_PROGRAMS=("ruby-dev", "ruby")
+
+#Function to install all of the pre req programs
+function install_pre_req () {
+  apt-get update
+
+  #Aptitude pre reqs
+  for program in "${PRE_REQ_PROGRAMS}"
+  do
+    echo $program
+  done
+
+  #Install fpm using ruby gem
+  gem install fpm
+}
+
+#File containing the list of kernels we are going to build for and where to find them
+declare -r LIST_OF_KERNELS="kernels"
+
+function build_package() {
+
+}
+
+
+
+
+#Main entry point of the bash script
+function main() {
+  install_pre_req
+
+
+
+}
 export DIR=${PWD#}
 export PACKAGE_VERSION=1.0.0-1~${BUILD_NUMBER}.`git rev-parse --short HEAD`
 
@@ -28,4 +60,7 @@ while read KVER; do
   	--description "uvcvideo-geopatch" \
   	-C ${DIR}/output .
 
-done < kernels
+done < $LIST_OF_KERNELS
+
+#Main script. Execution
+main "$@"
