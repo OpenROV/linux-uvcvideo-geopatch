@@ -2,7 +2,7 @@
 
 This project creates a custom uvcvideo.ko kernel driver patched with the changes needed to drive a geo camera.
 
-This is what it should be automating:
+## This is what it should be automating:
 
 Below steps will prepare and compile the uvc driver for current kernel:
 
