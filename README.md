@@ -6,7 +6,7 @@ This project creates a custom uvcvideo.ko kernel driver patched with the changes
 
 Below steps will prepare and compile the uvc driver for current kernel:
 
-* Download Linux kernel source code version as per running on host platform. Kernel source can be downloaded from here: [kernel](www.kernel.org)
+* Download Linux kernel source code version as per running on host platform. Kernel source can be downloaded from here: [kernel.org](https://www.kernel.org/)
 
   * Extract (untar) kernel source tar ball and copy `<linux-x.x.x.>/drivers/media/usb/uvc` directory to `$GEOSW_ROOT/condorsw/host/lib/uvcvideo`. 
 
