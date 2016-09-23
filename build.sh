@@ -1,4 +1,8 @@
 #!/bin/bash
+
+#Set bash vars. 
+# -e: Exit immediately if a command exits with a non-zero status.
+# -x: Print commands and their arguments as they are executed.
 set -ex
 
 if ! [[ "$KERNEL_VERSION" == 4.* ]]; then
