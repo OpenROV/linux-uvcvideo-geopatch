@@ -40,6 +40,59 @@ declare -r LIST_OF_KERNELS="kernels"
 
 function build_package() {
 
+  #Make sure we got an actual string
+  if [ -z "$1" ]
+  then
+    echo "No string provided to build_package()!"
+    exit 1
+  fi
+
+  #Make sure that it is a valid kernel string
+  local kernel_string=(${1//;})
+  local kernel_version=${kernel_string[0]}
+  local kernel_location=${kernel_string[1]}
+
+  if ! [[ "$kernel_version" == 4.* ]]
+  then
+    echo "INVALID KERNEL VERSION"
+    echo "BUILD ONLY SUPPORTS 4.x kernels on Debian Jessie"
+    exit 1
+  fi
+
+  #If that is all good, call the separate build script
+  ./build.sh $kernel_version $kernel_location
+}
+
+function create_package() {
+
+  #Make sure we got an actual string
+  if [ -z "$1" ]
+  then
+    echo "No string provided to create_package()!"
+    exit 1
+  fi
+
+  #Make sure that it is a valid kernel string
+  local kernel_string=(${1//;})
+  local kernel_version=${kernel_string[0]}
+  local kernel_location=${kernel_string[1]}
+
+  if ! [[ "$kernel_version" == 4.* ]]
+  then
+    echo "INVALID KERNEL VERSION"
+    echo "BUILD ONLY SUPPORTS 4.x kernels on Debian Jessie"
+    exit 1
+  fi
+
+  #If that is all good, call the fpm packager
+  local package_name="linux-${kernel_version}-uvcvideo-geopatch"
+
+  fpm -f -m info@openrov.com -s dir -t deb -a $ARCH \
+  -n ${package_name} \
+  -v ${PACKAGE_VERSION} \
+  --after-install=${DIR}/install_lib/afterinstall.sh \
+  --description "uvcvideo-geopatch" \
+  -C ${DIR}/output .
 }
 
 #Main entry point of the bash script
@@ -49,27 +102,13 @@ function main() {
   #Iterate through kernels listed in the kernel file
   while read $VERSION;
   do
+    
     build_package $VERSION
+
+    create_package $VERSION
+
   done < $LIST_OF_KERNELS
 }
 
-while read KVER; do
-  export KERNEL_VERSION=$KVER
-  ./build.sh 
-
-  #package
-  cd $DIR
-
-  export PACKAGE="linux-${KERNEL_VERSION}-uvcvideo-geopatch"
-
-  fpm -f -m info@openrov.com -s dir -t deb -a $ARCH \
-  	-n ${PACKAGE} \
-  	-v ${PACKAGE_VERSION} \
-    --after-install=${DIR}/install_lib/afterinstall.sh \
-  	--description "uvcvideo-geopatch" \
-  	-C ${DIR}/output .
-
-done < $LIST_OF_KERNELS
-
-#Main script. Execution
+#Call the main script with args
 main "$@"
