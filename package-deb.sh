@@ -26,7 +26,6 @@ function install_pre_req () {
   #Aptitude pre reqs
   apt-get install --assume-yes ${PRE_REQ_PROGRAMS[@]}
 
-
   #Install fpm using ruby gem
   #First, check if it is already installed to save build time
   if `gem list fpm -i`
@@ -45,6 +44,7 @@ function create_directory() {
   if [ -z "$1" ]
   then
     echo "No agrument passed to create_directory()"
+    exit 1
   fi
 
   #Check if directory exists
@@ -73,6 +73,38 @@ declare -r DIR=${PWD#}
 #Set the package version
 declare -r PACKAGE_VERSION=1.0.0-1~${BUILD_NUMBER}.`git rev-parse --short HEAD`
 
+#Longterm Linux kernel versions...
+#4.x and greater are supported by jessie, so no <4
+declare -ar LINUX_KERNELS=(
+  "4.8-rc"
+  "4.7.5"
+  "4.4.22"
+  "4.1.33"
+)
+#...and where to find them
+function get_linux_kernel() {
+
+  #Make sure we got an input string
+  if [ -z "$1" ]
+  then
+    echo "no arguements passed to get_linux_kernel()"
+    exit 1
+  else
+    #Iterate through the aval kernels to find one that is close
+    local closest_kernel="4.1.33"
+    local closest_kernel_minor=1
+
+    for kernel in ${LINUX_KERNELS[@]}
+    do
+      IFS='.' read major minor micro <<< "${kernel}"    
+      
+      
+    done
+
+    #wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-$1.tar.xz"
+  fi
+}
+
 #File containing the list of kernels we are going to build for and where to find them
 declare -r LIST_OF_KERNELS="kernels.txt"
 
@@ -98,8 +130,11 @@ function build_package() {
   fi
 
   #If that is all good, create a directory for it
-  local full_dir_string="./output/$kernel_version"
+  local full_dir_string="./$OUTPUT_DIR/$kernel_version"
   create_directory $full_dir_string
+
+  #And download the linux kernel source closest (one higher) to that version
+  get_linux_kernel $kernel_version
 
   #./build.sh $kernel_version $kernel_location
 }
