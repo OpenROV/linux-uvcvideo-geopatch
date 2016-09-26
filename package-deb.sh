@@ -6,7 +6,7 @@
 set -ex
 
 #Array containing all of the packages we need from aptitude
-declare -ar PRE_REQ_PROGRAMS=("ruby-dev", "ruby")
+declare -ar PRE_REQ_PROGRAMS=(ruby-dev ruby)
 
 #Function to install all of the pre req programs
 function install_pre_req () {
@@ -15,7 +15,7 @@ function install_pre_req () {
   #Aptitude pre reqs
   for program in "${PRE_REQ_PROGRAMS}"
   do
-    echo $program
+    apt-get install $program --assume-yes
   done
 
   #Install fpm using ruby gem
