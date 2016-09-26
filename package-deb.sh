@@ -5,6 +5,17 @@
 # -x: Print commands and their arguments as they are executed.
 set -ex
 
+#Check if we need updates
+#Returns true if there are
+function need_to_update() {
+
+  IFS=';' read updates security_updates < <(/usr/lib/update-notifier/apt-check 2>&1)
+  if (( updates == 0 )); then
+    echo "No updates are available"
+  else
+    echo "There are updates available"
+  fi
+}
 #Array containing all of the packages we need from aptitude
 declare -ar PRE_REQ_PROGRAMS=("ruby-dev" "ruby" "openssl")
 
@@ -13,14 +24,41 @@ function install_pre_req () {
   apt-get update
 
   #Aptitude pre reqs
-  for program in "${PRE_REQ_PROGRAMS[@]}"
-  do
-    apt-get install --assume-yes $program
-  done
+  apt-get install --assume-yes ${PRE_REQ_PROGRAMS[@]}
+
 
   #Install fpm using ruby gem
-  gem install fpm
+  #First, check if it is already installed to save build time
+  if `gem list fpm -i`
+  then
+    echo "FPM is already installed"
+  else
+    gem install fpm
+  fi
+
 }
+
+#Directory operations
+function create_directory() {
+
+  #Make sure we got an actual string
+  if [ -z "$1" ]
+  then
+    echo "No agrument passed to create_directory()"
+  fi
+
+  #Check if directory exists
+  if [ -d "$1" ]
+  then
+    echo "$1 already exists."
+  else
+    mkdir $1
+  fi
+}
+
+#Main output directory
+declare -r OUTPUT_DIR="output"
+create_directory output
 
 #Set the machine hardware name
 declare ARCH=`uname -m`
@@ -59,8 +97,11 @@ function build_package() {
     exit 1
   fi
 
-  #If that is all good, call the separate build script
-  ./build.sh $kernel_version $kernel_location
+  #If that is all good, create a directory for it
+  local full_dir_string="./output/$kernel_version"
+  create_directory $full_dir_string
+
+  #./build.sh $kernel_version $kernel_location
 }
 
 function create_package() {
@@ -97,13 +138,14 @@ function create_package() {
 
 #Main entry point of the bash script
 function main() {
-  #install_pre_req
+  install_pre_req
 
   #Iterate through kernels listed in the kernel file
   while read line
   do
     
     build_package $line    
+  
   done < $LIST_OF_KERNELS
 }
 
