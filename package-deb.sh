@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 #Set bash vars. 
 # -e: Exit immediately if a command exits with a non-zero status.
@@ -36,7 +36,7 @@ declare -r DIR=${PWD#}
 declare -r PACKAGE_VERSION=1.0.0-1~${BUILD_NUMBER}.`git rev-parse --short HEAD`
 
 #File containing the list of kernels we are going to build for and where to find them
-declare -r LIST_OF_KERNELS="kernels"
+declare -r LIST_OF_KERNELS="kernels.txt"
 
 function build_package() {
 
@@ -47,8 +47,8 @@ function build_package() {
     exit 1
   fi
 
-  #Make sure that it is a valid kernel string
-  local kernel_string=(${1//;})
+  #Make sure that it is a valid kernel string  
+  IFS=',' read -a kernel_string <<< "$1"
   local kernel_version=${kernel_string[0]}
   local kernel_location=${kernel_string[1]}
 
@@ -97,16 +97,13 @@ function create_package() {
 
 #Main entry point of the bash script
 function main() {
-  install_pre_req
+  #install_pre_req
 
   #Iterate through kernels listed in the kernel file
-  while read $VERSION;
+  while read line
   do
     
-    build_package $VERSION
-
-    create_package $VERSION
-
+    build_package $line    
   done < $LIST_OF_KERNELS
 }
 

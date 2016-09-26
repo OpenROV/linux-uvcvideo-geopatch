@@ -3,12 +3,12 @@
 #Set bash vars. 
 # -e: Exit immediately if a command exits with a non-zero status.
 # -x: Print commands and their arguments as they are executed.
-set -e
+set -ex
 
 #Error script that prints the correct usage of the build script
 function print_usage() {
-  echo "USAGE: ./build.sh [KERNEL_VERSION];[KERNEL_LOCATION]"
-  echo "EXAMPLE: ./build.sh 4.1.22-ti-r59;http://repos.rcn-ee.com/debian/pool/main/l/linux-upstream/linux-headers-4.1.22-ti-r59_1jessie_armhf.deb"
+  echo "USAGE: ./build.sh [KERNEL_VERSION] [KERNEL_LOCATION]"
+  echo "EXAMPLE: ./build.sh 4.1.22-ti-r59 http://repos.rcn-ee.com/debian/pool/main/l/linux-upstream/linux-headers-4.1.22-ti-r59_1jessie_armhf.deb"
   echo "Or, you can run with default parameters by using the following command:"
   echo "./build.sh -d"
   exit 1
@@ -39,10 +39,8 @@ function main() {
   then
     echo "Using default kernel arguments"
   else
-    local kernel_string=(${1//;})
-
-    KERNEL_VERSION=${kernel_string[0]}
-    KERNEL_LOCATION=${kernel_string[1]}
+    KERNEL_VERSION=$1
+    KERNEL_LOCATION=$2
   fi
 
   #Check the version number to make sure that it is supported
