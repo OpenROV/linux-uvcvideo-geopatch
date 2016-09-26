@@ -1,4 +1,4 @@
-#!/bin/bash
+!/bin/bash
 
 #Set bash vars. 
 # -e: Exit immediately if a command exits with a non-zero status.
@@ -6,16 +6,16 @@
 set -ex
 
 #Array containing all of the packages we need from aptitude
-declare -ar PRE_REQ_PROGRAMS=(ruby-dev ruby)
+declare -ar PRE_REQ_PROGRAMS=("ruby-dev" "ruby" "openssl")
 
 #Function to install all of the pre req programs
 function install_pre_req () {
   apt-get update
 
   #Aptitude pre reqs
-  for program in "${PRE_REQ_PROGRAMS}"
+  for program in "${PRE_REQ_PROGRAMS[@]}"
   do
-    apt-get install $program --assume-yes
+    apt-get install --assume-yes $program
   done
 
   #Install fpm using ruby gem
