@@ -122,8 +122,34 @@ set +e
       fi
     done
 set -e
+
     echo "Using linux kernel version: $closest_linux_kernel"
-    wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-$closest_linux_kernel.tar.xz"
+    
+    #Download the kernel tar
+    local linux_kernel_addr="https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-$closest_linux_kernel.tar.xz"
+    wget $linux_kernel_addr
+ 
+    local dir_path="./$OUTPUT_DIR/$kernel_version"
+   
+    #Extract the tar into the corresponding folder
+    local linux_kernel_basename=$(basename $linux_kernel_addr)
+    tar -xf $linux_kernel_basename -C $dir_path
+
+    #Cut off the extension
+    linux_kernel_basename=${linux_kernel_basename%.tar.xz}
+
+    #Create a uvc video directory to build in with the name of the kernel
+    local uvcvideo_dir="./$OUTPUT_DIR/$kernel_version/uvcvideo-$linux_kernel_basename"
+    create_directory $uvcvideo_dir
+
+    #Copy all of the uvc files into that directory
+    local uvc_full_path="./$OUTPUT_DIR/$kernel_version/$linux_kernel_basename/drivers/media/usb/uvc/."
+
+    cp -R $uvc_full_path $uvcvideo_dir
+
+    #Clean up
+    rm -r $(basename $linux_kernel_addr)
+
   fi
 }
 
