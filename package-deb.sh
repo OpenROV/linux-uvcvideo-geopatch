@@ -298,7 +298,7 @@ function create_package() {
   fi
 
   #Make sure that it is a valid kernel string
-  local kernel_string=(${1//;})
+  IFS=',' read -a kernel_string <<< "$1"
   local kernel_version=${kernel_string[0]}
   local kernel_location=${kernel_string[1]}
 
@@ -317,7 +317,7 @@ function create_package() {
   -v ${PACKAGE_VERSION} \
   --after-install=${DIR}/install_lib/afterinstall.sh \
   --description "uvcvideo-geopatch" \
-  -C ${DIR}/output .
+  -C ${DIR}/output/$kernel_version/ lib/
 }
 
 #Main entry point of the bash script
@@ -329,7 +329,9 @@ function main() {
   do
     
     build_package $line    
-  
+ 
+    create_package $line
+ 
   done < $LIST_OF_KERNELS
 }
 

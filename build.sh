@@ -66,7 +66,7 @@ function main() {
   (cd $driver_source ; make -j)
   
   #Create an updates folder
-  local updates_dir="$OUTPUT_DIR/lib/modules/$KERNEL_VERSION/updates"
+  local updates_dir="$OUTPUT_DIR/$KERNEL_VERSION/lib/modules/$KERNEL_VERSION/updates"
   mkdir -p $updates_dir
   
   #And copy the ko file
