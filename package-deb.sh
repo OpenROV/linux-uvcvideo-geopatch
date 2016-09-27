@@ -3,7 +3,7 @@
 #Set bash vars. 
 # -e: Exit immediately if a command exits with a non-zero status.
 # -x: Print commands and their arguments as they are executed.
-set -e
+set -ex
 
 #Check if we need updates
 #Returns true if there are
@@ -85,8 +85,6 @@ declare -ar LINUX_KERNELS=(
 #...and where to find them
 function get_linux_kernel() {
 
-  local __uvc_video_dir=$2
-  
   #Make sure we got an input string
   if [ -z "$1" ]
   then
@@ -141,15 +139,13 @@ set -e
     linux_kernel_basename=${linux_kernel_basename%.tar.xz}
 
     #Create a uvc video directory to build in with the name of the kernel
-    uvcvideo_dir="./$OUTPUT_DIR/$kernel_version/uvcvideo-$linux_kernel_basename"
-    create_directory $uvcvideo_dir
+    UVC_VIDEO_DIR="./$OUTPUT_DIR/$kernel_version/uvcvideo-$linux_kernel_basename"
+    create_directory $UVC_VIDEO_DIR
 
     #Copy all of the uvc files into that directory
     local uvc_full_path="./$OUTPUT_DIR/$kernel_version/$linux_kernel_basename/drivers/media/usb/uvc/."
 
-    cp -a -R $uvc_full_path $uvcvideo_dir
-
-    eval $__uvc_video_dir="'$uvcvideo_dir'"
+    cp -a -R $uvc_full_path $UVC_VIDEO_DIR
 
     #Clean up
     rm -r $(basename $linux_kernel_addr)
@@ -175,8 +171,11 @@ function get_kernel_version_number() {
   echo $(printf "%0*d" $padwidth $return_number)
 }
 
-#Patch routine 
+#Where the patched uvc driver will go. This is overwritten for each build
+declare UVC_VIDEO_DIR=""
+
 declare -r PATCH_DIR="./patches/*"
+#Patch routine
 function apply_patches() {
 
   #Check for valid input
@@ -248,6 +247,8 @@ function apply_patches() {
   echo ${patches[@]}
 
   #And apply the patches
+  (cd $UVC_VIDEO_DIR ; patch -p5 < ../../../${patches[0]})
+  (cd $UVC_VIDEO_DIR ; patch -p5 < ../../../${patches[1]})
   echo $PWD
 
 }
@@ -282,8 +283,7 @@ function build_package() {
   create_directory $full_dir_string
 
   #And download the linux kernel source closest (one higher) to that version
-  uvc_video_dir=""
-  get_linux_kernel $kernel_version $uvc_video_dir
+  get_linux_kernel $kernel_version
 
   #Apply kernel patches to the uvcvideo driver
   apply_patches $kernel_version $uvc_video_dir
