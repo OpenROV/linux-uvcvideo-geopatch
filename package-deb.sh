@@ -81,6 +81,7 @@ declare -ar LINUX_KERNELS=(
   "4.4.22"
   "4.1.33"
 )
+
 #...and where to find them
 function get_linux_kernel() {
 
@@ -90,18 +91,39 @@ function get_linux_kernel() {
     echo "no arguements passed to get_linux_kernel()"
     exit 1
   else
+    local kernel_version=$1
+    IFS=. read k_major k_minor k_build <<<"${kernel_version}"
+    
     #Iterate through the aval kernels to find one that is close
-    local closest_kernel="4.1.33"
-    local closest_kernel_minor=1
+    local closest_linux_kernel=""
+    local delta=10
 
+#Need to turn off e for this block because of deltas that equal 0
+set +e
     for kernel in ${LINUX_KERNELS[@]}
     do
       IFS='.' read major minor micro <<< "${kernel}"    
-      
-      
-    done
+ 
+      #Santatize
+      minor=$(echo $minor | sed 's/[^0-9]*//g')
 
-    #wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-$1.tar.xz"
+      #Check the delta between minors
+      current_delta=(`expr $minor - $k_minor`)
+      echo $current_delta
+
+      if (("$current_delta" < "$delta")); then
+        delta=$current_delta
+        closest_linux_kernel=$kernel
+      elif (("$current_delta" == 0));then
+        closest_linux_kernel=$kernel
+        break
+      elif (("$current_delta" < 0));then
+        break      
+      fi
+    done
+set -e
+    echo "Using linux kernel version: $closest_linux_kernel"
+    wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-$closest_linux_kernel.tar.xz"
   fi
 }
 
@@ -173,7 +195,7 @@ function create_package() {
 
 #Main entry point of the bash script
 function main() {
-  install_pre_req
+  #install_pre_req
 
   #Iterate through kernels listed in the kernel file
   while read line
