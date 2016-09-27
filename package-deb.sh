@@ -163,10 +163,6 @@ function get_kernel_version_number() {
   else
     return_number=$1
   fi
-
-  if (("$return_number" <= 9));then
-    return_number=$(($return_number*10))
-  fi
  
   echo $(printf "%0*d" $padwidth $return_number)
 }
