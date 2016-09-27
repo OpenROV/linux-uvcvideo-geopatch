@@ -244,13 +244,9 @@ function apply_patches() {
   done
 
   #Copy those patches over into the uvc directory
-  echo ${patches[@]}
-
   #And apply the patches
-  (cd $UVC_VIDEO_DIR ; patch -p5 < ../../../${patches[0]})
-  (cd $UVC_VIDEO_DIR ; patch -p5 < ../../../${patches[1]})
-  echo $PWD
-
+  (cd $UVC_VIDEO_DIR ; patch -p5 --ignore-whitespace < ../../../${patches[0]})
+  (cd $UVC_VIDEO_DIR ; patch -p5 --ignore-whitespace < ../../../${patches[1]})
 }
 
 
@@ -277,6 +273,10 @@ function build_package() {
     echo "BUILD ONLY SUPPORTS 4.x kernels on Debian Jessie"
     exit 1
   fi
+
+  #Need to export this version so that GEO make files can work
+  #This is overwritten foreach build
+  export KERNEL_VERSION=$kernel_version
 
   #If that is all good, create a directory for it
   local full_dir_string="./$OUTPUT_DIR/$kernel_version"
