@@ -245,7 +245,7 @@ function apply_patches() {
 
   #Copy those patches over into the uvc directory
   #And apply the patches
-  (cd $UVC_VIDEO_DIR ; patch -p5 --ignore-whitespace < ../../../${patches[0]})
+  (cd $UVC_VIDEO_DIR ; patch -p5 --dry-run --ignore-whitespace < ../../../${patches[0]})
   (cd $UVC_VIDEO_DIR ; patch -p5 --ignore-whitespace < ../../../${patches[1]})
 }
 
