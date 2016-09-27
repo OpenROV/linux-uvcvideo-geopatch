@@ -153,6 +153,7 @@ set -e
   fi
 }
 
+
 #Patch application
 declare -r PATCH_DIR="./patches/*"
 function apply_patches() {
@@ -164,24 +165,65 @@ function apply_patches() {
   fi
 
   #Get the version of the kernel we are trying to find a patch for
-  IFS='.' read -a kernel_number <<< "$var"
-  local kernel_major=${kernel_number[0]}
-  local kernel_minor=${kernel_number[1]}
-  local kernel_micro=${kernel_number[2]}
+  IFS='.' read -a kernel_number <<< "$1"
+
+  #Set the vars with leading zeros
+  local kernel_major=$(printf "%02d" "${kernel_number[0]}")
+  local kernel_minor=$(printf "%02d" "${kernel_number[1]}")
+  local kernel_micro=$(printf "%02d" "${kernel_number[2]}")
   kernel_micro=$(echo $kernel_micro | cut -f1 -d "-")
 
   kernel_number="$kernel_major$kernel_minor$kernel_micro"
 
   #Find the most recent patch that matches this kernel version
   #Iterate through the files in the patch directory and compare the kernel versions
+  local delta="100000"
+  local closest_kernel_version=""
+
   for patch in $PATCH_DIR; do
     
     #Get the basename and cut the extension
     local patch_basename=$(basename $patch)
-
     patch_basename=${patch_basename%.patch}
-    echo $patch_basename  
+    patch_basename=${patch_basename##*-}    
+    
+    #Get the kernel number for the patch with leading zeros
+    IFS='.' read -a uvc_number <<< "$patch_basename"
+
+    #Set the vars with leading zeros
+    local uvc_major=$(printf "%02d" "${uvc_number[0]}")
+    local uvc_minor=$(printf "%02d" "${uvc_number[1]}")
+    local uvc_micro=$(printf "%02d" "${uvc_number[2]}")
+
+    uvc_number="$uvc_major$uvc_minor$uvc_micro"
+    
+    #Calculate the difference
+    local current_delta=(`expr $kernel_number - $uvc_number`)
+    
+    if (("$current_delta" < "$delta"));then
+      delta=$current_delta
+      closest_kernel_version=$patch_basename
+      continue
+    elif (("$current_delta" == 0));then
+      closest_kernel_version=$patch_basename
+      break
+    elif (("$current_delta" < 0));then
+      break
+    fi
   done
+
+  echo "Using patch: $closest_kernel_version"
+  declare -a patches=()
+  #I realize this is clumsy and sub optimal, but with n < 50 patches O(n^2) shouldn't be too bad
+  for patch in $PATCH_DIR; do
+    #Check to see if this is a patch we want
+    if [[ $patch == *"$closest_kernel_version"* ]];then
+      patches+=('$patch')
+    fi
+  done
+
+  #Copy those patches over into the uvc directory
+  echo $"patches[@]"
 
 }
 
