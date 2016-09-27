@@ -153,6 +153,39 @@ set -e
   fi
 }
 
+#Patch application
+declare -r PATCH_DIR="./patches/*"
+function apply_patches() {
+
+  #Check for valid input
+  if [ -z "$1" ]; then
+    echo "no string provided to apply_patches!"
+    exit 1
+  fi
+
+  #Get the version of the kernel we are trying to find a patch for
+  IFS='.' read -a kernel_number <<< "$var"
+  local kernel_major=${kernel_number[0]}
+  local kernel_minor=${kernel_number[1]}
+  local kernel_micro=${kernel_number[2]}
+  kernel_micro=$(echo $kernel_micro | cut -f1 -d "-")
+
+  kernel_number="$kernel_major$kernel_minor$kernel_micro"
+
+  #Find the most recent patch that matches this kernel version
+  #Iterate through the files in the patch directory and compare the kernel versions
+  for patch in $PATCH_DIR; do
+    
+    #Get the basename and cut the extension
+    local patch_basename=$(basename $patch)
+
+    patch_basename=${patch_basename%.patch}
+    echo $patch_basename  
+  done
+
+}
+
+
 #File containing the list of kernels we are going to build for and where to find them
 declare -r LIST_OF_KERNELS="kernels.txt"
 
@@ -184,6 +217,10 @@ function build_package() {
   #And download the linux kernel source closest (one higher) to that version
   get_linux_kernel $kernel_version
 
+  #Apply kernel patches to the uvcvideo driver
+  apply_patches $kernel_version
+
+  #And finally build the driver
   #./build.sh $kernel_version $kernel_location
 }
 

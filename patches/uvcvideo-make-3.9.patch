@@ -1,0 +1,24 @@
+diff --git a/drivers/media/usb/uvc/Makefile b/drivers/media/usb/uvc/Makefile
+index c26d12f..29ea268 100644
+--- a/drivers/media/usb/uvc/Makefile
++++ b/drivers/media/usb/uvc/Makefile
+@@ -1,6 +1,18 @@
++KERNEL_VERSION	:= $(shell uname -r)
++KERNEL_DIR	:= /lib/modules/$(KERNEL_VERSION)/build
++PWD		:= $(shell pwd)
++
+ uvcvideo-objs  := uvc_driver.o uvc_queue.o uvc_v4l2.o uvc_video.o uvc_ctrl.o \
+ 		  uvc_status.o uvc_isight.o uvc_debugfs.o
+ ifeq ($(CONFIG_MEDIA_CONTROLLER),y)
+ uvcvideo-objs  += uvc_entity.o
+ endif
+-obj-$(CONFIG_USB_VIDEO_CLASS) += uvcvideo.o
++obj-m += uvcvideo.o
++
++default:
++	@echo "Building USB Video Class driver..."
++	$(MAKE) -C $(KERNEL_DIR) M=$(PWD) CROSS_COMPILE=$(CROSS_COMPILE) modules
++
++clean:
++	@echo "Cleaning USB Video Class driver..."
++	$(MAKE) -C $(KERNEL_DIR) M=$(PWD) CROSS_COMPILE=$(CROSS_COMPILE) clean

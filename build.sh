@@ -55,7 +55,7 @@ function main() {
     wget $KERNEL_LOCATION
 
     local deb_file=$(basename $KERNEL_LOCATION)
-    #dpkg --force-all -i $deb_file
+    dpkg --force-all -i $deb_file
   
   fi
 

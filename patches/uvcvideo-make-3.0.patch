@@ -1,0 +1,54 @@
+--- a/uvc/Makefile	1970-01-01 05:30:00.000000000 +0530
++++ b/uvc/Makefile	2014-11-21 17:39:38.024423589 +0530
+@@ -0,0 +1,51 @@
++KERNEL_VERSION	:= $(shell uname -r)
++KERNEL_DIR	:= /lib/modules/$(KERNEL_VERSION)/build
++PWD		:= $(shell pwd)
++
++CPPFLAGS        := -I$(M)/include $(CPPFLAGS)
++KBUILD_CPPFLAGS := -I$(M)/include $(KBUILD_CPPFLAGS)
++LINUXINCLUDE    := -I$(M)/include $(LINUXINCLUDE)
++EXTRA_CFLAGS	:= -include $(M)/compat.h
++
++ifeq (,$(patsubst 3.6.%,, $(KERNEL_VERSION)))
++CLEAN_LOCAL	:= clean_3p6_kernel
++else
++CLEAN_LOCAL	:= clean_other_kernel
++endif
++
++uvcvideo-objs  := uvc_driver.o uvc_queue.o uvc_v4l2.o uvc_video.o uvc_ctrl.o \
++		  uvc_status.o uvc_isight.o
++obj-m += uvcvideo.o
++
++LIBRARY_NAME	=		\
++		uvcvideo.ko
++
++INSTALLED_DIR		:= $(GEOSW_ROOT)/installed
++INSTALLED_LIB_D		:= $(INSTALLED_DIR)/lib
++INSTALLED_LIB_F		:= $(addprefix $(INSTALLED_LIB_D)/, $(LIBRARY_NAME))
++
++all: $(LIBRARY_NAME)
++
++$(LIBRARY_NAME):
++	@echo "Building USB Video Class driver..."
++	$(MAKE) -C $(KERNEL_DIR) M=$(PWD) CROSS_COMPILE=$(CROSS_COMPILE) modules
++
++clean:	$(CLEAN_LOCAL)
++install: $(INSTALLED_LIB_F)
++
++$(INSTALLED_LIB_D)/%:	%
++	mkdir -p $(@D)
++	cp -uvd $(<) $(@)
++
++
++# ------------------------------------------------------------------------------
++# 3.6 kernel series has a bug in cleaning external modules
++# clean command will try to remove System.map from kernel build
++# when compiling for 3.6 kernel, clean the module ourselves
++# ------------------------------------------------------------------------------
++clean_3p6_kernel:
++	@echo "Cleaning USB Video Class driver..."
++	rm -rf *.ko *.o *.mod.c *.mod.o .*.o.cmd .*.ko.cmd modules.order Module.symvers .tmp_versions
++clean_other_kernel:
++	@echo "Cleaning USB Video Class driver..."
++	$(MAKE) -C $(KERNEL_DIR) M=$(PWD) CROSS_COMPILE=$(CROSS_COMPILE) clean
