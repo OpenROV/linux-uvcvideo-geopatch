@@ -36,5 +36,5 @@ Below steps will prepare and compile the uvc driver for current kernel:
 ## TODO:
 
 * [ ] Pull the GEO code GC6500 project
-* [ ] Pull the Linux kernel source for the target kernel
+* [X] Pull the Linux kernel source for the target kernel
 * [X] Rip out the Geo Patch printk commands
