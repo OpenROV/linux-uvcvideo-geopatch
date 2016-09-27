@@ -1,1 +1,0 @@
-cmd_/build/gc6500-7.4.1/condorsw/host/lib/uvcvideo/uvc-4.1.1/uvcvideo.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /build/gc6500-7.4.1/condorsw/host/lib/uvcvideo/uvc-4.1.1/uvcvideo.ko /build/gc6500-7.4.1/condorsw/host/lib/uvcvideo/uvc-4.1.1/uvcvideo.o /build/gc6500-7.4.1/condorsw/host/lib/uvcvideo/uvc-4.1.1/uvcvideo.mod.o
