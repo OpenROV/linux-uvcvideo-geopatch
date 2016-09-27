@@ -153,6 +153,19 @@ set -e
   fi
 }
 
+function get_kernel_version_number() {
+  
+  local padwidth=2
+  local return_number=""
+
+  if (("$1" <= 9));then
+    return_number=$(($1*10))
+  else
+    return_number=$1
+  fi
+ 
+  echo $(printf "%0*d" $padwidth $return_number)
+}
 
 #Patch application
 declare -r PATCH_DIR="./patches/*"
@@ -168,9 +181,9 @@ function apply_patches() {
   IFS='.' read -a kernel_number <<< "$1"
 
   #Set the vars with leading zeros
-  local kernel_major=$(printf "%02d" "${kernel_number[0]}")
-  local kernel_minor=$(printf "%02d" "${kernel_number[1]}")
-  local kernel_micro=$(printf "%02d" "${kernel_number[2]}")
+  local kernel_major=$(get_kernel_version_number ${kernel_number[0]})
+  local kernel_minor=$(get_kernel_version_number ${kernel_number[1]})
+  local kernel_micro=$(get_kernel_version_number ${kernel_number[2]})
   kernel_micro=$(echo $kernel_micro | cut -f1 -d "-")
 
   kernel_number="$kernel_major$kernel_minor$kernel_micro"
@@ -191,9 +204,9 @@ function apply_patches() {
     IFS='.' read -a uvc_number <<< "$patch_basename"
 
     #Set the vars with leading zeros
-    local uvc_major=$(printf "%02d" "${uvc_number[0]}")
-    local uvc_minor=$(printf "%02d" "${uvc_number[1]}")
-    local uvc_micro=$(printf "%02d" "${uvc_number[2]}")
+    local uvc_major=$(get_kernel_version_number ${uvc_number[0]})
+    local uvc_minor=$(get_kernel_version_number ${uvc_number[1]})
+    local uvc_micro=$(get_kernel_version_number ${uvc_number[2]})
 
     uvc_number="$uvc_major$uvc_minor$uvc_micro"
     
@@ -218,12 +231,12 @@ function apply_patches() {
   for patch in $PATCH_DIR; do
     #Check to see if this is a patch we want
     if [[ $patch == *"$closest_kernel_version"* ]];then
-      patches+=('$patch')
+      patches+=($patch)
     fi
   done
 
   #Copy those patches over into the uvc directory
-  echo $"patches[@]"
+  echo ${patches[@]}
 
 }
 
