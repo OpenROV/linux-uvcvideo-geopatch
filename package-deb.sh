@@ -3,7 +3,7 @@
 #Set bash vars. 
 # -e: Exit immediately if a command exits with a non-zero status.
 # -x: Print commands and their arguments as they are executed.
-set -ex
+set -e
 
 #Check if we need updates
 #Returns true if there are
@@ -85,6 +85,8 @@ declare -ar LINUX_KERNELS=(
 #...and where to find them
 function get_linux_kernel() {
 
+  local __uvc_video_dir=$2
+  
   #Make sure we got an input string
   if [ -z "$1" ]
   then
@@ -139,13 +141,15 @@ set -e
     linux_kernel_basename=${linux_kernel_basename%.tar.xz}
 
     #Create a uvc video directory to build in with the name of the kernel
-    local uvcvideo_dir="./$OUTPUT_DIR/$kernel_version/uvcvideo-$linux_kernel_basename"
+    uvcvideo_dir="./$OUTPUT_DIR/$kernel_version/uvcvideo-$linux_kernel_basename"
     create_directory $uvcvideo_dir
 
     #Copy all of the uvc files into that directory
     local uvc_full_path="./$OUTPUT_DIR/$kernel_version/$linux_kernel_basename/drivers/media/usb/uvc/."
 
-    cp -R $uvc_full_path $uvcvideo_dir
+    cp -a -R $uvc_full_path $uvcvideo_dir
+
+    eval $__uvc_video_dir="'$uvcvideo_dir'"
 
     #Clean up
     rm -r $(basename $linux_kernel_addr)
@@ -156,16 +160,22 @@ set -e
 function get_kernel_version_number() {
   
   local padwidth=2
-  local return_number=$1
+  local return_number=""
+  
+  if [ -z "$1" ]; then
+    return_number=0
+  else
+    return_number=$1
+  fi
 
   if (("$return_number" <= 9));then
-    return_number=$(($1*10))
+    return_number=$(($return_number*10))
   fi
  
   echo $(printf "%0*d" $padwidth $return_number)
 }
 
-#Patch application
+#Patch routine 
 declare -r PATCH_DIR="./patches/*"
 function apply_patches() {
 
@@ -237,6 +247,9 @@ function apply_patches() {
   #Copy those patches over into the uvc directory
   echo ${patches[@]}
 
+  #And apply the patches
+  echo $PWD
+
 }
 
 
@@ -269,10 +282,11 @@ function build_package() {
   create_directory $full_dir_string
 
   #And download the linux kernel source closest (one higher) to that version
-  get_linux_kernel $kernel_version
+  uvc_video_dir=""
+  get_linux_kernel $kernel_version $uvc_video_dir
 
   #Apply kernel patches to the uvcvideo driver
-  apply_patches $kernel_version
+  apply_patches $kernel_version $uvc_video_dir
 
   #And finally build the driver
   #./build.sh $kernel_version $kernel_location
