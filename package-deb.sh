@@ -289,7 +289,7 @@ function build_package() {
   apply_patches $kernel_version $uvc_video_dir
 
   #And finally build the driver
-  #./build.sh $kernel_version $kernel_location
+  ./build.sh $kernel_version $kernel_location
 }
 
 function create_package() {
@@ -326,7 +326,7 @@ function create_package() {
 
 #Main entry point of the bash script
 function main() {
-  #install_pre_req
+  install_pre_req
 
   #Iterate through kernels listed in the kernel file
   while read line

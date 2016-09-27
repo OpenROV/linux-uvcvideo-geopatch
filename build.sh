@@ -18,6 +18,7 @@ function print_usage() {
 declare -r DEFAULT_FLAG="-d"
 declare KERNEL_VERSION="4.1.22-ti-r59"
 declare KERNEL_LOCATION="http://repos.rcn-ee.com/debian/pool/main/l/linux-upstream/linux-headers-4.1.22-ti-r59_1jessie_armhf.deb"
+declare -r OUTPUT_DIR="./output"
 
 # # Build uvcvideo Kernel Driver for 4.1.x based Kernels
 # make -j8 -C ./uvcvideo/uvc-4.1.1/
@@ -58,9 +59,18 @@ function main() {
     dpkg --force-all -i $deb_file
   
   fi
+  
 
-
-
+  #make the driver
+  local driver_source="$OUTPUT_DIR/$KERNEL_VERSION/uvcvideo-*"
+  (cd $driver_source ; make -j)
+  
+  #Create an updates folder
+  local updates_dir="$OUTPUT_DIR/lib/modules/$KERNEL_VERSION/updates"
+  mkdir -p $updates_dir
+  
+  #And copy the ko file
+  cp $driver_source/uvcvideo.ko $updates_dir
 }
 
 main "$@"
