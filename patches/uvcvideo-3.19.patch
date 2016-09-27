@@ -158,7 +158,7 @@ index 3394c34..4adc2a4 100644
  	 * NULL.
  	 */
  	if (buf == NULL) {
-+		printk("Buffer is NULL\n");
++		//printk("Buffer is NULL\n");
  		stream->last_fid = fid;
  		return -ENODATA;
  	}
@@ -167,7 +167,7 @@ index 3394c34..4adc2a4 100644
  	if (data[1] & UVC_STREAM_ERR) {
 -		uvc_trace(UVC_TRACE_FRAME, "Marking buffer as bad (error bit "
 -			  "set).\n");
-+		printk("Marking buffer as bad (error bit set).\n");
++		//printk("Marking buffer as bad (error bit set).\n");
  		buf->error = 1;
  	}
  
@@ -177,7 +177,7 @@ index 3394c34..4adc2a4 100644
  		if (fid == stream->last_fid) {
 -			uvc_trace(UVC_TRACE_FRAME, "Dropping payload (out of "
 -				"sync).\n");
-+			printk("Dropping payload (out of sync).\n");
++			//printk("Dropping payload (out of sync).\n");
  			if ((stream->dev->quirks & UVC_QUIRK_STREAM_NO_FID) &&
  			    (data[1] & UVC_STREAM_EOF))
  				stream->last_fid ^= UVC_STREAM_FID;
@@ -186,7 +186,7 @@ index 3394c34..4adc2a4 100644
  	/* Complete the current frame if the buffer size was exceeded. */
  	if (len > maxlen) {
 -		uvc_trace(UVC_TRACE_FRAME, "Frame complete (overflow).\n");
-+		printk("Frame complete (overflow).\n");
++		//printk("Frame complete (overflow).\n");
  		buf->state = UVC_BUF_STATE_READY;
  	}
  }
@@ -195,7 +195,7 @@ index 3394c34..4adc2a4 100644
  		uvc_trace(UVC_TRACE_FRAME, "Frame complete (EOF found).\n");
  		if (data[0] == len)
 -			uvc_trace(UVC_TRACE_FRAME, "EOF in empty payload.\n");
-+			printk("EOF in empty payload.\n");
++			//printk("EOF in empty payload.\n");
  		buf->state = UVC_BUF_STATE_READY;
  		if (stream->dev->quirks & UVC_QUIRK_STREAM_NO_FID)
  			stream->last_fid ^= UVC_STREAM_FID;
