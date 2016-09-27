@@ -156,12 +156,10 @@ set -e
 function get_kernel_version_number() {
   
   local padwidth=2
-  local return_number=""
+  local return_number=$1
 
-  if (("$1" <= 9));then
+  if (("$return_number" <= 9));then
     return_number=$(($1*10))
-  else
-    return_number=$1
   fi
  
   echo $(printf "%0*d" $padwidth $return_number)
@@ -183,8 +181,9 @@ function apply_patches() {
   #Set the vars with leading zeros
   local kernel_major=$(get_kernel_version_number ${kernel_number[0]})
   local kernel_minor=$(get_kernel_version_number ${kernel_number[1]})
-  local kernel_micro=$(get_kernel_version_number ${kernel_number[2]})
-  kernel_micro=$(echo $kernel_micro | cut -f1 -d "-")
+  local kernel_micro=$(echo ${kernel_number[1]} | cut -f1 -d "-")
+  kernel_micro=$(get_kernel_version_number $kernel_micro)
+  
 
   kernel_number="$kernel_major$kernel_minor$kernel_micro"
 
