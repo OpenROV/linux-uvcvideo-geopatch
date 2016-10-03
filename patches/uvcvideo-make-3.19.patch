@@ -3,7 +3,7 @@ index c26d12f..29ea268 100644
 --- a/drivers/media/usb/uvc/Makefile
 +++ b/drivers/media/usb/uvc/Makefile
 @@ -1,6 +1,18 @@
-+KERNEL_VERSION	:= $(shell uname -r)
++#KERNEL_VERSION	:= $(shell uname -r)
 +KERNEL_DIR	:= /lib/modules/$(KERNEL_VERSION)/build
 +PWD		:= $(shell pwd)
 +
