@@ -8,7 +8,7 @@ set -ex
 #Error script that prints the correct usage of the build script
 function print_usage() {
   echo "USAGE: ./build.sh [KERNEL_VERSION] [KERNEL_LOCATION]"
-  echo "EXAMPLE: ./build.sh 4.1.22-ti-r59 http://repos.rcn-ee.com/debian/pool/main/l/linux-upstream/linux-headers-4.1.22-ti-r59_1jessie_armhf.deb"
+  echo "EXAMPLE: ./build.sh 4.4.30-ti-r65 http://repos.rcn-ee.com/debian/pool/main/l/linux-upstream/linux-headers-4.4.30-ti-r65_1jessie_armhf.deb"
   echo "Or, you can run with default parameters by using the following command:"
   echo "./build.sh -d"
   exit 1
@@ -16,8 +16,8 @@ function print_usage() {
 
 #Global script variables
 declare -r DEFAULT_FLAG="-d"
-declare KERNEL_VERSION="4.1.22-ti-r59"
-declare KERNEL_LOCATION="http://repos.rcn-ee.com/debian/pool/main/l/linux-upstream/linux-headers-4.1.22-ti-r59_1jessie_armhf.deb"
+declare KERNEL_VERSION="4.4.30-ti-r65"
+declare KERNEL_LOCATION="http://repos.rcn-ee.com/debian/pool/main/l/linux-upstream/linux-headers-4.4.30-ti-r65_1jessie_armhf.deb"
 declare -r OUTPUT_DIR="./output"
 
 # # Build uvcvideo Kernel Driver for 4.1.x based Kernels

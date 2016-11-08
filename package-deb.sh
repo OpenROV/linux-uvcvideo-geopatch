@@ -80,6 +80,7 @@ declare -ar LINUX_KERNELS=(
   "4.7.5"
   "4.4.22"
   "4.1.33"
+  "4.4.30"
 )
 
 #...and where to find them
