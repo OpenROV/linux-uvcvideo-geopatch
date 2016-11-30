@@ -26,6 +26,16 @@ declare -r OUTPUT_DIR="./output"
 # mkdir -p ./output/lib/modules/${KERNEL_VERSION}/updates
 # cp ./uvcvideo/uvc-4.1.1/uvcvideo.ko ./output/lib/modules/${KERNEL_VERSION}/updates
 
+function unpacktazgzHeaders(filename) {
+    tar -xvzf $filename --strip 1 -C /lib/modules/${KERNEL_VERSION}/build
+    pushd /lib/modules/${KERNEL_VERSION}/build
+    # https://github.com/machinekit/machinekit-dkms/blob/master/README.md
+    wget https://raw.githubusercontent.com/igorpecovnik/lib/next/patch/headers-debian-byteshift.patch
+    patch -p1 < headers-debian-byteshift.patch  
+    make scripts    
+    popd
+}
+
 
 function main() {
 
@@ -54,14 +64,26 @@ function main() {
   if [ ! -d /lib/modules/${KERNEL_VERSION}/build ]
   then
     wget $KERNEL_LOCATION
+    local filename=$(basename $KERNEL_LOCATION)
+    //Add support for tar.gz files
 
-    local deb_file=$(basename $KERNEL_LOCATION)
-    dpkg --force-all -i $deb_file
-  
+    case "$filename" in
+    *.gz | *.tgz ) 
+            # it's gzipped
+            unpacktazgzHeaders $filename
+            ;;
+    *)
+            # it's not
+            dpkg --force-all -i $filename            
+            ;;
+    esac    
+ 
   fi
   
 
   #make the driver
+  export KERNEL_ROOT=/lib/modules/${KERNEL_VERSION}/build
+  export ARCH="arm"
   local driver_source="$OUTPUT_DIR/$KERNEL_VERSION/uvcvideo-*"
   (cd $driver_source ; make -j)
   

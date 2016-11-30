@@ -302,6 +302,7 @@ function create_package() {
   IFS=',' read -a kernel_string <<< "$1"
   local kernel_version=${kernel_string[0]}
   local kernel_location=${kernel_string[1]}
+  local kernel_distribution=${kernel_string[2]}
 
   if ! [[ "$kernel_version" == 4.* ]]
   then
@@ -311,7 +312,7 @@ function create_package() {
   fi
 
   #If that is all good, call the fpm packager
-  local package_name="linux-${kernel_version}-uvcvideo-geopatch"
+  local package_name="linux-${kernel_distribution}-${kernel_version}-uvcvideo-geopatch"
 
   fpm -f -m info@openrov.com -s dir -t deb -a $ARCH \
   -n ${package_name} \
