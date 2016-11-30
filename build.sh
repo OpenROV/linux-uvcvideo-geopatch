@@ -26,7 +26,7 @@ declare -r OUTPUT_DIR="./output"
 # mkdir -p ./output/lib/modules/${KERNEL_VERSION}/updates
 # cp ./uvcvideo/uvc-4.1.1/uvcvideo.ko ./output/lib/modules/${KERNEL_VERSION}/updates
 
-function unpacktazgzHeaders(filename) {
+function unpacktazgzHeaders() {
     tar -xvzf $filename --strip 1 -C /lib/modules/${KERNEL_VERSION}/build
     pushd /lib/modules/${KERNEL_VERSION}/build
     # https://github.com/machinekit/machinekit-dkms/blob/master/README.md
