@@ -30,9 +30,9 @@ function unpacktazgzHeaders() {
     tar -xvzf $filename --strip 1 -C /lib/modules/${KERNEL_VERSION}/build
     pushd /lib/modules/${KERNEL_VERSION}/build
     # https://github.com/machinekit/machinekit-dkms/blob/master/README.md
-    wget https://raw.githubusercontent.com/igorpecovnik/lib/next/patch/headers-debian-byteshift.patch
-    patch -p1 < headers-debian-byteshift.patch  
-    make scripts    
+    # wget https://raw.githubusercontent.com/igorpecovnik/lib/next/patch/headers-debian-byteshift.patch
+    # patch -p1 < headers-debian-byteshift.patch  
+    # make scripts    
     popd
 }
 
