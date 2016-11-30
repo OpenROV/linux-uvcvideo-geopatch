@@ -32,7 +32,7 @@ function unpacktazgzHeaders() {
     # https://github.com/machinekit/machinekit-dkms/blob/master/README.md
     # wget https://raw.githubusercontent.com/igorpecovnik/lib/next/patch/headers-debian-byteshift.patch
     # patch -p1 < headers-debian-byteshift.patch  
-    # make scripts    
+    make scripts    
     popd
 }
 
