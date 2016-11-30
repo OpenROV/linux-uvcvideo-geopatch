@@ -61,8 +61,10 @@ function main() {
   fi
 
   #If that is OK, check to see if the directory exists
-  if [ ! -d /lib/modules/${KERNEL_VERSION}/build ]
+  if [ -d /lib/modules/${KERNEL_VERSION}/build ]
   then
+    rm -rf /lib/modules/${KERNEL_VERSION}/build
+  fi
     wget $KERNEL_LOCATION
     local filename=$(basename $KERNEL_LOCATION)
     //Add support for tar.gz files
@@ -78,7 +80,7 @@ function main() {
             ;;
     esac    
  
-  fi
+ 
   
 
   #make the driver
