@@ -67,8 +67,6 @@ function main() {
   fi
     wget $KERNEL_LOCATION
     local filename=$(basename $KERNEL_LOCATION)
-    //Add support for tar.gz files
-
     case "$filename" in
     *.gz | *.tgz ) 
             # it's gzipped
