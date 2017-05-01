@@ -1,2 +1,3 @@
 4.4.30-ti-r65,http://repos.rcn-ee.com/debian/pool/main/l/linux-upstream/linux-headers-4.4.30-ti-r65_1jessie_armhf.deb,bbb
 4.1.21,https://misc1.dev.resin.io/~florin/kernel_modules_headers/v2.0.0-beta.3/rpi3/kernel_modules_headers.tar.gz,resinRaspi
+4.4.48,https://s3.amazonaws.com/resin-staging-img/resinos/raspberrypi3/2.0.0%2Brev3.dev/kernel_modules_headers.tar.gz,resinRaspi

@@ -76,8 +76,10 @@ declare -r PACKAGE_VERSION=1.0.0-1~${BUILD_NUMBER}.`git rev-parse --short HEAD`
 #Longterm Linux kernel versions...
 #4.x and greater are supported by jessie, so no <4
 declare -ar LINUX_KERNELS=(
+  "4.9"
   "4.8-rc"
   "4.7.5"
+  "4.4.48"
   "4.4.22"
   "4.1.33"
   "4.4.30"
