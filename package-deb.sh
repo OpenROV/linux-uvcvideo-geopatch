@@ -148,7 +148,7 @@ set -e
     #Copy all of the uvc files into that directory
     local uvc_full_path="./$OUTPUT_DIR/$kernel_version/$linux_kernel_basename/drivers/media/usb/uvc/."
 
-    cp -a -R $uvc_full_path $UVC_VIDEO_DIR
+    cp -af -R $uvc_full_path $UVC_VIDEO_DIR
 
     #Clean up
     rm -r $(basename $linux_kernel_addr)
