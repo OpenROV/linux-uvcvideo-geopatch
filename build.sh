@@ -65,7 +65,7 @@ function main() {
   then
     rm -rf /lib/modules/${KERNEL_VERSION}/build
   fi
-    mkdir -p /lib/modules/4.1.21/build
+    mkdir -p /lib/modules/${KERNEL_VERSION}/build
     wget $KERNEL_LOCATION
     local filename=$(basename $KERNEL_LOCATION)
     case "$filename" in
