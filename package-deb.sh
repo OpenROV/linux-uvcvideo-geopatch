@@ -21,7 +21,7 @@ declare -ar PRE_REQ_PROGRAMS=("ruby-dev" "ruby" "openssl")
 
 #Function to install all of the pre req programs
 function install_pre_req () {
-  apt-get update
+  apt-get update || true
 
   #Aptitude pre reqs
   apt-get install --assume-yes ${PRE_REQ_PROGRAMS[@]}
@@ -83,6 +83,7 @@ declare -ar LINUX_KERNELS=(
   "4.4.22"
   "4.1.33"
   "4.4.30"
+  "4.9.50"
 )
 
 #...and where to find them
