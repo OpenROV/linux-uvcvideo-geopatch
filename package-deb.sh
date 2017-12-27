@@ -24,7 +24,7 @@ function install_pre_req () {
   apt-get update || true
 
   #Aptitude pre reqs
-  apt-get install --assume-yes ${PRE_REQ_PROGRAMS[@]}
+  apt-get install --assume-yes --force-yes ${PRE_REQ_PROGRAMS[@]}
 
   #Install fpm using ruby gem
   #First, check if it is already installed to save build time
