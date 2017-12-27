@@ -5,7 +5,7 @@
 # -x: Print commands and their arguments as they are executed.
 set -ex
 
-#Check if we need updates
+#Check if we need updates 
 #Returns true if there are
 function need_to_update() {
 
