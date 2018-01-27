@@ -1,6 +1,21 @@
 # linux-uvcvideo-geopatch
 
-This project creates a custom uvcvideo.ko kernel driver patched with the changes needed to drive a geo camera.
+This project creates a custom uvcvideo.ko kernel driver patched with the changes needed to drive a geo camera.  It is tailored to support the Resin image kernels.
+
+
+## To generate the driver
+* Update the Dockerfile with the architecure you intend to build for.  It is defaulted to raspberrypi3
+* `docker build -t myimagename .`
+* `Docker run -it --rm -v $(pwd)/output:/output myimagename --version 1.0.0 --build`
+
+The image will paste the resulting module to file.io when run. It will display the url you can use to then download it.
+The image will also place the kernel and the deb package it creates in the /output folder which you can map to your local filesystem.
+
+## Getting the details from Resin
+* You can build the image and then do a `docker run -it --rm myimagename --list` to see all of the resin OS versions by platform.
+* You will need to create a new minimal application for the OS/Platform of interest and manually inspect it with `uname -a` to find the kernel version that is used.
+* The version number is required, but you have to manage it.  This is used by the debian installer.
+
 
 ## This is what it should be automating:
 
@@ -33,8 +48,4 @@ Below steps will prepare and compile the uvc driver for current kernel:
   * `cd $GEOSW_ROOT/condorsw/host/lib/uvcvideo/uvc`
   * `make`
 
-## TODO:
 
-* [ ] Pull the GEO code GC6500 project
-* [X] Pull the Linux kernel source for the target kernel
-* [X] Rip out the Geo Patch printk commands
